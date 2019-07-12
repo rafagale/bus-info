@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-11">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/rafa/jar/gson-2.6.2.jar"/>
+	<classpathentry kind="lib" path="/home/rafa/jar/json-20180813.jar"/>
+	<classpathentry kind="lib" path="/home/rafa/jar/pushbullet.jar"/>
+	<classpathentry kind="lib" path="/home/rafa/jar/slf4j-api-1.7.26.jar"/>
+	<classpathentry kind="lib" path="/home/rafa/jar/slf4j-jdk14-1.7.26.jar"/>
+	<classpathentry kind="lib" path="/home/rafa/jar/httpclient-4.5.9 (1).jar"/>
+	<classpathentry kind="lib" path="/home/rafa/jar/httpcore-4.4.11.jar"/>
+	<classpathentry kind="lib" path="/home/rafa/jar/commons-logging-1.2.jar"/>
+	<classpathentry kind="lib" path="/home/rafa/jar/commons-codec-1.12.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
