@@ -15,7 +15,7 @@ import com.github.silk8192.jpushbullet.PushbulletClient;
 public class BusInfo {
 
     private final String USER_AGENT = "Mozilla/5.0";
-    private static final String API_KEY = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
+    private static final String API_KEY = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXx";
 
     public static void main(String[] args) throws Exception {
         BusInfo http = new BusInfo();
@@ -30,18 +30,17 @@ public class BusInfo {
 
         PushbulletClient client = new PushbulletClient(API_KEY);
 
-        System.out.println(message);
-//		client.deleteAllPushes();
-//		client.sendNotePush("Bus", message);
+        client.deleteAllPushes();
+        client.sendNotePush("Bus", message);
     }
 
 
     private String getDataFromAPI(String[] stops, String[] buses) throws Exception {
         String message = "";
-        StringBuilder sb = new StringBuilder("");
+        StringBuilder sb = new StringBuilder();
         URL obj = null;
         HttpURLConnection con = null;
-        JSONObject actualBus;
+        JSONObject bus;
 
         for (String stop : stops) {
             String url = "http://www.zaragoza.es/sede/servicio/urbanismo-infraestructuras/transporte-urbano/poste-autobus/" + stop + ".json";
@@ -50,7 +49,7 @@ public class BusInfo {
             con = (HttpURLConnection) obj.openConnection();
             con.setRequestMethod("GET");
             con.setRequestProperty("User-Agent", USER_AGENT);
-
+            //TODO:try catch
             InputStream response = con.getInputStream();
 
             JSONTokener tokener = new JSONTokener(response);
@@ -58,16 +57,20 @@ public class BusInfo {
             JSONArray destinos = object.getJSONArray("destinos");
 
             for (int i = 0; i < destinos.length(); i++) {
-                for (String bus : buses) {
-                    if (bus.equals(destinos.getJSONObject(i).get("linea"))) {
-                        actualBus = (JSONObject) destinos.get(i);
-                        String firstBus = actualBus.get("primero").toString();
-                        String secondBus = actualBus.get("segundo").toString();
+                for (String actualBus : buses) {
+                    if (actualBus.equals(destinos.getJSONObject(i).get("linea"))) {
+                        bus = (JSONObject) destinos.get(i);
+                        String busStop = bus.getString("linea");
+                        String firstBus = bus.get("primero").toString();
+                        String secondBus = bus.get("segundo").toString();
+                        sb.append(busStop)
+                                .append(": ")
+                                .append(getDataInMinutes(firstBus))
+                                .append(" y ")
+                                .append(getDataInMinutes(secondBus));
                         if (buses.length > 1) {
                             sb.append("\n");
                         }
-                        sb.append(actualBus.getString("linea")).append(": ").append(getDataInMinutes(firstBus));
-                        sb.append(" y ").append(getDataInMinutes(secondBus));
                         message = sb.toString();
                     }
                 }
@@ -106,116 +109,5 @@ public class BusInfo {
         } else {
             return "nunca";
         }
-    }
-
-    private String getDataFromAPIOld_v2(String[] stops) throws Exception {
-        String mensaje = "Error";
-
-        if (stops.length == 1) {
-            String url = "http://www.zaragoza.es/sede/servicio/urbanismo-infraestructuras/transporte-urbano/poste-autobus/"
-                    + stops[0] + ".json";
-            URL obj = new URL(url);
-            HttpURLConnection con = null;
-
-            try {
-                con = (HttpURLConnection) obj.openConnection();
-                con.setRequestMethod("GET");
-                con.setRequestProperty("User-Agent", USER_AGENT);
-            } catch (Exception e) {
-                return con.getResponseCode() + "";
-            }
-
-            InputStream response = con.getInputStream();
-
-            JSONTokener tokener = new JSONTokener(response);
-            JSONObject object = new JSONObject(tokener);
-
-            JSONArray destinos = object.getJSONArray("destinos");
-
-            JSONObject bus;
-            StringBuilder sb = new StringBuilder("");
-
-            for (int i = 0; i < destinos.length(); i++) {
-                if ("CI2".equals(destinos.getJSONObject(i).get("linea"))) {
-
-                    bus = (JSONObject) destinos.get(i);
-                    String firstBus = bus.get("primero").toString();
-                    String secondBus = bus.get("segundo").toString();
-
-                    sb.append(bus.getString("linea") + ": " + getDataInMinutes(firstBus));
-                    sb.append(" y " + getDataInMinutes(secondBus));
-                    mensaje = sb.toString();
-                }
-            }
-        } else if (stops.length == 2) {
-            String url = "http://www.zaragoza.es/sede/servicio/urbanismo-infraestructuras/transporte-urbano/poste-autobus/"
-                    + stops[0] + ".json";
-            URL obj = new URL(url);
-            HttpURLConnection con = null;
-
-            try {
-                con = (HttpURLConnection) obj.openConnection();
-                con.setRequestMethod("GET");
-                con.setRequestProperty("User-Agent", USER_AGENT);
-            } catch (Exception e) {
-                return con.getResponseCode() + "";
-            }
-
-            InputStream response = con.getInputStream();
-
-            JSONTokener tokener = new JSONTokener(response);
-            JSONObject object = new JSONObject(tokener);
-
-            JSONArray destinos = object.getJSONArray("destinos");
-
-            JSONObject bus;
-            StringBuilder sb = new StringBuilder("");
-
-            for (int i = 0; i < destinos.length(); i++) {
-                if ("42".equals(destinos.getJSONObject(i).get("linea"))) {
-
-                    bus = (JSONObject) destinos.get(i);
-                    String firstBus = bus.get("primero").toString();
-                    String secondBus = bus.get("segundo").toString();
-
-                    sb.append(bus.getString("linea") + ": " + getDataInMinutes(firstBus));
-                    sb.append(" y " + getDataInMinutes(secondBus));
-                    mensaje = sb.toString() + "\n";
-                }
-            }
-            url = "http://www.zaragoza.es/sede/servicio/urbanismo-infraestructuras/transporte-urbano/poste-autobus/"
-                    + stops[1] + ".json";
-            obj = new URL(url);
-
-            try {
-                con = (HttpURLConnection) obj.openConnection();
-                con.setRequestMethod("GET");
-                con.setRequestProperty("User-Agent", USER_AGENT);
-            } catch (Exception e) {
-                return con.getResponseCode() + "";
-            }
-
-            response = con.getInputStream();
-            tokener = new JSONTokener(response);
-            object = new JSONObject(tokener);
-            destinos = object.getJSONArray("destinos");
-            bus = null;
-            sb = new StringBuilder("");
-            for (int i = 0; i < destinos.length(); i++) {
-                if ("CI1".equals(destinos.getJSONObject(i).get("linea"))) {
-
-                    bus = (JSONObject) destinos.get(i);
-                    String firstBus = bus.get("primero").toString();
-                    String secondBus = bus.get("segundo").toString();
-
-                    sb.append(bus.getString("linea") + ": " + getDataInMinutes(firstBus));
-                    sb.append(" y " + getDataInMinutes(secondBus));
-                    mensaje += sb.toString();
-                }
-            }
-        } else {
-            mensaje = "Error";
-        }
-        return mensaje;
     }
 }
