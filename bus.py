@@ -19,8 +19,9 @@ class BusMod(loader.Module):
     def __init__(self):
         self.name = _("BusMod")
 
-    async def client_ready(self, db):
+    async def client_ready(self, client, db):
         self._db = db
+        self._client = client
     
     async def busurlcmd(self, message):
         args = utils.get_args_raw(message)
