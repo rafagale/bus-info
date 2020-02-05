@@ -3,6 +3,8 @@ from .. import loader, main, utils
 import logging
 import requests
 import json
+import telethon
+
 from datetime import datetime
 
 logger = logging.getLogger(__name__)
