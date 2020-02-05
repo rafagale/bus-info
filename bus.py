@@ -19,12 +19,18 @@ class BusMod(loader.Module):
     def __init__(self):
         self.name = _("BusMod")
 
-    def getUrl(self):
-        return self._db.get(__name__, "url", "")
-
+    async def client_ready(self, db):
+        self._db = db
+    
     async def busurlcmd(self, message):
         args = utils.get_args_raw(message)
         return self._db.set(__name__, "url", args)
+
+    def getUrl(self):
+        return self._db.get(__name__, "url", "")
+
+    def setUrl(self):
+        return self._db.set(__name__, "url", "")
 
     async def buscmd(self, message):
         """Bus CMD"""
