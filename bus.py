@@ -30,7 +30,7 @@ class BusMod(loader.Module):
     def getUrl(self):
         return self._db.get(__name__, "url", "")
 
-    def setUrl(self):
+    async def setUrl(self):
         return self._db.set(__name__, "url", "")
 
     async def buscmd(self, message):
